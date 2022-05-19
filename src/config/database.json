@@ -1,0 +1,32 @@
+{
+  "development": {
+    "username": "root",
+    "password": "layanan-325704:asia-southeast2:layanan",
+    "database": "dokterhebat_db",
+    "host": "34.101.161.26",
+    "dialect": "mysql",
+    "define": {
+      "freezeTableName": true
+    }
+  },
+  "test": {
+    "username": "root",
+    "password": "layanan-325704:asia-southeast2:layanan",
+    "database": "dokterhebat_db_test",
+    "host": "34.101.161.26",
+    "dialect": "mysql",
+    "define": {
+      "freezeTableName": true
+    }
+  },
+  "production": {
+    "username": "root",
+    "password": "layanan-325704:asia-southeast2:layanan",
+    "database": "dokterhebat_db_production",
+    "host": "34.101.161.26",
+    "dialect": "mysql",
+    "define": {
+      "freezeTableName": true
+    }
+  }
+}
