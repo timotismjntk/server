@@ -42,21 +42,16 @@ app.get('/', async (req, res) => {
   }
 });
 
-// socketIO.on('connection', socket => {
-//   console.log('User connected to server');
-//   socket.on('join-room', ({roomID, userId}) => {
-//     socket.join(roomID);
-//     socket.to(roomID).emit('user-connected', userId);
-//   });
-//   socket.on('message', ({userId, chat}) => {
-//     console.log(userId, chat);
-//   });
-// });
-
-
-// socketIO.on(konsultasi_id.toString(), data => {
-//   konsultasi(data)
-// })
+socketIO.on('connection', socket => {
+  console.log('User connected to server');
+  socket.on('join-room', ({roomID, userId}) => {
+    socket.join(roomID);
+    socket.to(roomID).emit('user-connected', userId);
+  });
+  socket.on('message', ({userId, chat}) => {
+    console.log(userId, chat);
+  });
+});
 
 server.listen(8080, () => {
   console.log('listening on port ' + 8080);
