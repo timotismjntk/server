@@ -148,7 +148,7 @@ module.exports = {
                 pageInfo,
               });
             } else {
-              const statusUpdateTotalUnreaded = await konsultasiID.update({total_belum_terbaca_tenaga_kesehatan: 0});
+              const statusUpdateTotalUnreaded = await konsultasiID.update({total_belum_terbaca_tenaga_kesehatan: 0, is_readed: 'sudah'});
               return response(res, 'Detail konsultasi anda', {
                 data: konsultasi,
                 statusUpdateTotalUnreaded: statusUpdateTotalUnreaded ? 'Berhasil ubah total belum terbaca tenaga kesehatan menjadi 0' : 'Berhasil ubah total belum terbaca tenaga kesehatan',
@@ -162,7 +162,7 @@ module.exports = {
                 pageInfo,
               });
             } else {
-              const statusUpdateTotalUnreaded = await konsultasiID.update({total_belum_terbaca_masyarakat: 0});
+              const statusUpdateTotalUnreaded = await konsultasiID.update({total_belum_terbaca_masyarakat: 0, is_readed: 'sudah'});
               return response(res, 'Detail konsultasi anda', {
                 data: konsultasi,
                 statusUpdateTotalUnreaded: statusUpdateTotalUnreaded ? 'Berhasil ubah total belum terbaca masyarakat menjadi 0' : 'Berhasil ubah total belum terbaca masyarakat',
