@@ -148,7 +148,26 @@ module.exports = {
                 pageInfo,
               });
             } else {
-              const statusUpdateTotalUnreaded = await konsultasiID.update({total_belum_terbaca_tenaga_kesehatan: 0, is_readed: 'sudah'});
+              const findKonsultasiUnreaded = await tb_konsultasi_percakapan.findAll({
+                where: {
+                  [Op.and]: [
+                    {
+                      konsultasi_id: konsultasi_id,
+                    },
+                    {
+                      is_readed: 'belum',
+                      user_id: Number(user_id)
+                    }
+                  ]
+                },
+                limit: limit,
+                offset: (page - 1) * limit,
+                order: [['id', 'DESC']],
+              });
+              findKonsultasiUnreaded.forEach(value => {
+                value.update({is_readed: 'sudah'})
+              })
+              const statusUpdateTotalUnreaded = await konsultasiID.update({total_belum_terbaca_tenaga_kesehatan: 0});
               return response(res, 'Detail konsultasi anda', {
                 data: konsultasi,
                 statusUpdateTotalUnreaded: statusUpdateTotalUnreaded ? 'Berhasil ubah total belum terbaca tenaga kesehatan menjadi 0' : 'Berhasil ubah total belum terbaca tenaga kesehatan',
@@ -162,7 +181,26 @@ module.exports = {
                 pageInfo,
               });
             } else {
-              const statusUpdateTotalUnreaded = await konsultasiID.update({total_belum_terbaca_masyarakat: 0, is_readed: 'sudah'});
+              const findKonsultasiUnreaded = await tb_konsultasi_percakapan.findAll({
+                where: {
+                  [Op.and]: [
+                    {
+                      konsultasi_id: konsultasi_id,
+                    },
+                    {
+                      is_readed: 'belum',
+                      user_id: Number(user_id)
+                    }
+                  ]
+                },
+                limit: limit,
+                offset: (page - 1) * limit,
+                order: [['id', 'DESC']],
+              });
+              findKonsultasiUnreaded.forEach(value => {
+                value.update({is_readed: 'sudah'})
+              })
+              const statusUpdateTotalUnreaded = await konsultasiID.update({total_belum_terbaca_masyarakat: 0});
               return response(res, 'Detail konsultasi anda', {
                 data: konsultasi,
                 statusUpdateTotalUnreaded: statusUpdateTotalUnreaded ? 'Berhasil ubah total belum terbaca masyarakat menjadi 0' : 'Berhasil ubah total belum terbaca masyarakat',
