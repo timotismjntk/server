@@ -278,7 +278,7 @@ module.exports = {
           where: where(),
           limit: limit,
           offset: (page - 1) * 1,
-          order: [['updatedAt', 'DESC']],
+          order: [['createdAt', 'DESC']],
         });
       const path = req.originalUrl.slice(1).split('?')[0];
       const prev = querystring.stringify({...req.query, ...{page: page - 1}});
