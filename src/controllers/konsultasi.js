@@ -317,8 +317,7 @@ module.exports = {
                 ) {
                   return item;
                 }
-              })
-              .reverse(),
+              }),
           },
         ];
         return response(res, 'List konsultasi anda', {
