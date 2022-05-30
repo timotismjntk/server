@@ -5,6 +5,7 @@ const Joi = require('joi');
 const response = require('../helpers/response');
 const socketIO = require('../App');
 const {Op} = require('sequelize');
+const messaging = require('../helpers/firebase')
 
 module.exports = {
   mulaiKonsultasi: async (req, res) => {
@@ -70,6 +71,7 @@ module.exports = {
         konten: Joi.string(),
         url_gambar: Joi.string(),
       });
+      const {recipient_id, recipient_jenis_user} = req.query;
       const {value: results, error} = joiSchema.validate(req.body);
       if (error) {
         return response(res, 'Error', {error: error.message}, 400, false);
@@ -80,6 +82,7 @@ module.exports = {
             results.konsultasi_id.toString() + 'percakapan',
             send.dataValues,
           ); // konfigurasi untuk socket io
+          messaging(recipient_id.toString() + recipient_jenis_user.toString() + '', results?.nama, results?.konten)
           return response(res, 'Konsultasi Anda terkirim', send.dataValues);
         } else {
           return response(res, 'Gagal mengirim Konsultasi', {}, 400, false);
@@ -396,7 +399,7 @@ module.exports = {
   },
   ubahStatusKonsultasi: async (req, res) => {
     try {
-      const {konsultasi_id, status} = req.query;
+      const {konsultasi_id, recipient_id, status} = req.query;
       const findKonsultasiById = await tb_konsultasi.findOne({
         where: {konsultasi_id},
       });
@@ -411,6 +414,7 @@ module.exports = {
       } else {
         const ubah = await findKonsultasiById.update({status});
         if (ubah) {
+          socketIO.emit(recipient_id?.toString() + 'ubah_status', {recipient_id, status});
           return response(res, 'Status konsultasi berhasil di update', {ubah});
         } else {
           return response(
