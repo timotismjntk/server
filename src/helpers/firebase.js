@@ -12,8 +12,25 @@ const messaging = (topic, username, content, image) => {;
       title: username,
       body: content?.length > 20 ? content?.slice(0, 20)?.concat('...') : content || '',
     },
-    data: {
-      image,
+    android: {
+      notification: {
+        imageUrl: image,
+      }
+    },
+    apns: {
+      payload: {
+        aps: {
+          'mutable-content': 1
+        }
+      },
+      fcm_options: {
+        image: image,
+      }
+    },
+    webpush: {
+      headers: {
+        image: image,
+      }
     },
     topic: topic,
   }).then((response) => {
