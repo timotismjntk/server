@@ -6,7 +6,8 @@ admin.initializeApp({
     databaseURL: 'https://dokterhebatlabura-default-rtdb.asia-southeast1.firebasedatabase.app'
 })
 
-const messaging = (topic, username, content, image) => {;
+const messaging = (topic, username, content, image) => {
+  console.log(image);
   admin.messaging().send({
     notification: {
       title: username,
