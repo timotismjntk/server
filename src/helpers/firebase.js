@@ -11,7 +11,7 @@ const messaging = (topic, username, content, image) => {;
     notification: {
       title: username,
       body: content?.length > 20 ? content?.slice(0, 20)?.concat('...') : content || '',
-      data: image || '',
+      icon: image || '',
     },
     topic: topic,
   }).then((response) => {
