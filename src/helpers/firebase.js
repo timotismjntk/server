@@ -10,7 +10,7 @@ const messaging = (topic, username, content) => {;
   admin.messaging().send({
     notification: {
       title: username,
-      body: content?.length > 50 ? content?.slice(0, 50)?.concat('...') : content || 'Lihat lampiran gambar 📄',
+      body: content?.length > 50 ? content?.slice(0, 50)?.concat('...') : content || 'Lihat lampiran gambar 🖼️',
     },
     topic: topic,
   }).then((response) => {
