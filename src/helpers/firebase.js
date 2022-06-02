@@ -11,13 +11,13 @@ const messaging = (topic, username, content, image) => {;
     notification: {
       title: username,
       body: content?.length > 20 ? content?.slice(0, 20)?.concat('...') : content || '',
-      image: image || '',
+      data: image || '',
     },
     topic: topic,
   }).then((response) => {
     console.log(`Successfully sent notification: ${response}`)
   }).catch((err) => {
-    console.log(err.message)
+    console.log('firebase', err.message)
   })
 }
 
