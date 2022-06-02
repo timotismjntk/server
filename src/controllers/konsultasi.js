@@ -82,7 +82,7 @@ module.exports = {
             results.konsultasi_id.toString() + 'percakapan',
             send.dataValues,
           ); // konfigurasi untuk socket io
-          messaging(recipient_id.toString() + recipient_jenis_user.toString() + '', results?.nama, results?.konten)
+          messaging(recipient_id.toString() + recipient_jenis_user.toString() + '', results?.nama, results?.konten, results?.url_gambar)
           return response(res, 'Konsultasi Anda terkirim', send.dataValues);
         } else {
           return response(res, 'Gagal mengirim Konsultasi', {}, 400, false);

@@ -6,12 +6,12 @@ admin.initializeApp({
     databaseURL: 'https://dokterhebatlabura-default-rtdb.asia-southeast1.firebasedatabase.app'
 })
 
-const messaging = (topic, username, content) => {
-    console.log(topic, username, content);
+const messaging = (topic, username, content, image) => {;
   admin.messaging().send({
     notification: {
       title: username,
-      body: content?.length > 20 ? content?.slice(0, 20)?.concat('...') : content || ''
+      body: content?.length > 20 ? content?.slice(0, 20)?.concat('...') : content || '',
+      image: image || '',
     },
     topic: topic,
   }).then((response) => {
