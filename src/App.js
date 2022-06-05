@@ -53,6 +53,6 @@ socketIO.on('connection', socket => {
   });
 });
 
-server.listen(80, () => {
-  console.log('listening on port ' + 80);
+server.listen(8080, () => {
+  console.log('listening on port ' + 8080);
 });
