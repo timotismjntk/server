@@ -151,7 +151,7 @@ module.exports = {
               total_belum_terbaca_masyarakat,
             },
           } = konsultasiID;
-          if (Number(user_id) === tenaga_kesehatan_user_id) {
+          if (Number(user_id) === Number(tenaga_kesehatan_user_id)) {
             if (total_belum_terbaca_tenaga_kesehatan === 0) {
               return response(res, 'Detail konsultasi anda', {
                 data: konsultasi,
@@ -184,7 +184,7 @@ module.exports = {
                 pageInfo,
               });
             }
-          } else if (Number(user_id) === masyarakat_user_id) {
+          } else if (Number(user_id) === Number(masyarakat_user_id)) {
             if (total_belum_terbaca_masyarakat === 0) {
               return response(res, 'Detail konsultasi anda', {
                 data: konsultasi,
