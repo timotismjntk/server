@@ -43,11 +43,18 @@ module.exports = {
           //   nama: results.tenaga_kesehatan_nama,
           //   konten: `Hai, selamat datang di Dokter Hebat\nTerimakasih telah menghubungi, ${results.tenaga_kesehatan_nama} akan segera membalas.`,
           // });
+          const keluhanPasienSebagaiChat = await tb_konsultasi_percakapan.create({
+            konsultasi_id,
+            user_id: results?.masyarakat_user_id,
+            jenis_user: results?.masyarakat_jenis_user,
+            nama: results?.masyarakat_nama,
+            konten: results?.keluhan || '',
+          });
           socketIO.emit(
             results?.tenaga_kesehatan_user_id.toString() + 'mulai',
             send.dataValues,
           ); // konfigurasi untuk socket io
-          return response(res, 'Konsultasi Berhasil Dibuat', send.dataValues);
+          return response(res, 'Konsultasi Berhasil Dibuat', {send.dataValues, keluhanPasienSebagaiChat});
           // if (template) {
           //   return response(res, 'Konsultasi Berhasil Dibuat', send.dataValues);
           // } else {
