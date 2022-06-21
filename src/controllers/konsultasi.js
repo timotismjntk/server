@@ -5,7 +5,8 @@ const Joi = require('joi');
 const response = require('../helpers/response');
 const socketIO = require('../App');
 const {Op} = require('sequelize');
-const messaging = require('../helpers/firebase')
+const messaging = require('../helpers/firebase');
+const http = require('../helpers/http');
 
 module.exports = {
   mulaiKonsultasi: async (req, res) => {
@@ -54,6 +55,11 @@ module.exports = {
             results?.tenaga_kesehatan_user_id.toString() + 'mulai',
             send.dataValues,
           ); // konfigurasi untuk socket io
+          await http().post('/api/kirim_pesan', { // kirim pemberitahuan ke whatsapp
+            token: '22LABURAHEBAT22',
+            nomor_wa: '081270543240',
+            pesan: `Hai ${results.tenaga_kesehatan_nama}, ada konsultasi baru dari ${results?.masyarakat_nama} di aplikasi Dokter Hebat. Keluhan: ${results?.keluhan}, mohon segera di konfirmasi di aplikasi Dokter Hebat.`,
+          });
           return response(res, 'Konsultasi Berhasil Dibuat', send.dataValues);
           // if (template) {
           //   return response(res, 'Konsultasi Berhasil Dibuat', send.dataValues);
@@ -89,7 +95,11 @@ module.exports = {
             results.konsultasi_id.toString() + 'percakapan',
             send.dataValues,
           ); // konfigurasi untuk socket io
-          messaging(recipient_id.toString() + recipient_jenis_user.toString() + '', results?.nama, results?.konten)
+          messaging(
+            recipient_id.toString() + recipient_jenis_user.toString() + '',
+            results?.nama,
+            results?.konten,
+          );
           return response(res, 'Konsultasi Anda terkirim', send.dataValues);
         } else {
           return response(res, 'Gagal mengirim Konsultasi', {}, 400, false);
@@ -158,29 +168,34 @@ module.exports = {
                 pageInfo,
               });
             } else {
-              const findKonsultasiUnreaded = await tb_konsultasi_percakapan.findAll({
-                where: {
-                  [Op.and]: [
-                    {
-                      konsultasi_id: konsultasi_id,
-                    },
-                    {
-                      is_readed: 'belum',
-                      user_id: Number(user_id)
-                    }
-                  ]
-                },
-                limit: limit,
-                offset: (page - 1) * limit,
-                order: [['id', 'DESC']],
-              });
+              const findKonsultasiUnreaded =
+                await tb_konsultasi_percakapan.findAll({
+                  where: {
+                    [Op.and]: [
+                      {
+                        konsultasi_id: konsultasi_id,
+                      },
+                      {
+                        is_readed: 'belum',
+                        user_id: Number(user_id),
+                      },
+                    ],
+                  },
+                  limit: limit,
+                  offset: (page - 1) * limit,
+                  order: [['id', 'DESC']],
+                });
               findKonsultasiUnreaded.forEach(value => {
-                value.update({is_readed: 'sudah'})
-              })
-              const statusUpdateTotalUnreaded = await konsultasiID.update({total_belum_terbaca_tenaga_kesehatan: 0});
+                value.update({is_readed: 'sudah'});
+              });
+              const statusUpdateTotalUnreaded = await konsultasiID.update({
+                total_belum_terbaca_tenaga_kesehatan: 0,
+              });
               return response(res, 'Detail konsultasi anda', {
                 data: konsultasi,
-                statusUpdateTotalUnreaded: statusUpdateTotalUnreaded ? 'Berhasil ubah total belum terbaca tenaga kesehatan menjadi 0' : 'Berhasil ubah total belum terbaca tenaga kesehatan',
+                statusUpdateTotalUnreaded: statusUpdateTotalUnreaded
+                  ? 'Berhasil ubah total belum terbaca tenaga kesehatan menjadi 0'
+                  : 'Berhasil ubah total belum terbaca tenaga kesehatan',
                 pageInfo,
               });
             }
@@ -191,29 +206,34 @@ module.exports = {
                 pageInfo,
               });
             } else {
-              const findKonsultasiUnreaded = await tb_konsultasi_percakapan.findAll({
-                where: {
-                  [Op.and]: [
-                    {
-                      konsultasi_id: konsultasi_id,
-                    },
-                    {
-                      is_readed: 'belum',
-                      user_id: Number(user_id)
-                    }
-                  ]
-                },
-                limit: limit,
-                offset: (page - 1) * limit,
-                order: [['id', 'DESC']],
-              });
+              const findKonsultasiUnreaded =
+                await tb_konsultasi_percakapan.findAll({
+                  where: {
+                    [Op.and]: [
+                      {
+                        konsultasi_id: konsultasi_id,
+                      },
+                      {
+                        is_readed: 'belum',
+                        user_id: Number(user_id),
+                      },
+                    ],
+                  },
+                  limit: limit,
+                  offset: (page - 1) * limit,
+                  order: [['id', 'DESC']],
+                });
               findKonsultasiUnreaded.forEach(value => {
-                value.update({is_readed: 'sudah'})
-              })
-              const statusUpdateTotalUnreaded = await konsultasiID.update({total_belum_terbaca_masyarakat: 0});
+                value.update({is_readed: 'sudah'});
+              });
+              const statusUpdateTotalUnreaded = await konsultasiID.update({
+                total_belum_terbaca_masyarakat: 0,
+              });
               return response(res, 'Detail konsultasi anda', {
                 data: konsultasi,
-                statusUpdateTotalUnreaded: statusUpdateTotalUnreaded ? 'Berhasil ubah total belum terbaca masyarakat menjadi 0' : 'Berhasil ubah total belum terbaca masyarakat',
+                statusUpdateTotalUnreaded: statusUpdateTotalUnreaded
+                  ? 'Berhasil ubah total belum terbaca masyarakat menjadi 0'
+                  : 'Berhasil ubah total belum terbaca masyarakat',
                 pageInfo,
               });
             }
@@ -318,16 +338,15 @@ module.exports = {
           },
           {
             title: 'Konsultasi Lama',
-            data: konsultasi
-              .filter(item => {
-                if (
-                  item.status === 'Belum Selesai' ||
-                  item.status === 'Selesai' ||
-                  item.status === 'Terima'
-                ) {
-                  return item;
-                }
-              }),
+            data: konsultasi.filter(item => {
+              if (
+                item.status === 'Belum Selesai' ||
+                item.status === 'Selesai' ||
+                item.status === 'Terima'
+              ) {
+                return item;
+              }
+            }),
           },
         ];
         return response(res, 'List konsultasi anda', {
@@ -370,9 +389,16 @@ module.exports = {
             },
           } = findKonsultasiById;
           if (Number(user_id) === tenaga_kesehatan_user_id) {
-            const ubah = await findKonsultasiById.update({total_belum_terbaca_tenaga_kesehatan: Number(total_belum_terbaca_tenaga_kesehatan) + 1});
+            const ubah = await findKonsultasiById.update({
+              total_belum_terbaca_tenaga_kesehatan:
+                Number(total_belum_terbaca_tenaga_kesehatan) + 1,
+            });
             if (ubah) {
-              return response(res, 'Total konsultasi belum terbaca tenaga kesehatan berhasil di update', {ubah});
+              return response(
+                res,
+                'Total konsultasi belum terbaca tenaga kesehatan berhasil di update',
+                {ubah},
+              );
             } else {
               return response(
                 res,
@@ -383,9 +409,16 @@ module.exports = {
               );
             }
           } else if (Number(user_id) === masyarakat_user_id) {
-            const ubah = await findKonsultasiById.update({total_belum_terbaca_masyarakat: Number(total_belum_terbaca_masyarakat) + 1});
+            const ubah = await findKonsultasiById.update({
+              total_belum_terbaca_masyarakat:
+                Number(total_belum_terbaca_masyarakat) + 1,
+            });
             if (ubah) {
-              return response(res, 'Total konsultasi belum terbaca masyarakat berhasil di update', {ubah});
+              return response(
+                res,
+                'Total konsultasi belum terbaca masyarakat berhasil di update',
+                {ubah},
+              );
             } else {
               return response(
                 res,
@@ -398,7 +431,13 @@ module.exports = {
           }
         }
       } else {
-        return response(res, 'user_id && konsultasi_id is required', {}, 500, false);
+        return response(
+          res,
+          'user_id && konsultasi_id is required',
+          {},
+          500,
+          false,
+        );
       }
     } catch (error) {
       return response(res, error.message, {}, 500, false);
@@ -421,7 +460,10 @@ module.exports = {
       } else {
         const ubah = await findKonsultasiById.update({status});
         if (ubah) {
-          socketIO.emit(recipient_id?.toString() + 'ubah_status', {recipient_id, status});
+          socketIO.emit(recipient_id?.toString() + 'ubah_status', {
+            recipient_id,
+            status,
+          });
           return response(res, 'Status konsultasi berhasil di update', {ubah});
         } else {
           return response(
@@ -448,7 +490,7 @@ module.exports = {
             },
             {
               total_belum_terbaca_tenaga_kesehatan: {
-                [Op.not]: 0
+                [Op.not]: 0,
               },
             },
           ],
