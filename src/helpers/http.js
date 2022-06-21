@@ -12,4 +12,4 @@ const http = (url = 'https://layanan.labura.go.id', data) => {
   });
 };
 
-export default http;
+module.exports = http
