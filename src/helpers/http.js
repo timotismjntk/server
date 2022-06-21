@@ -1,4 +1,4 @@
-import {default as axios} from 'axios';
+const axios = require('axios').default;
 
 const http = (url = 'https://layanan.labura.go.id', data) => {
   return axios.create({
