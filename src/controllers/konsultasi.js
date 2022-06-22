@@ -55,11 +55,12 @@ module.exports = {
             results?.tenaga_kesehatan_user_id.toString() + 'mulai',
             send.dataValues,
           ); // konfigurasi untuk socket io
-          await http().post('/api/kirim_pesan', { // kirim pemberitahuan ke whatsapp
+          const {data} = await http().post('/api/kirim_pesan', { // kirim pemberitahuan ke whatsapp
             token: '22LABURAHEBAT22',
             nomor_wa: '081270543240',
             pesan: `Hai ${results.tenaga_kesehatan_nama}, ada konsultasi baru dari ${results?.masyarakat_nama} di aplikasi Dokter Hebat. Keluhan: ${results?.keluhan}, mohon segera di konfirmasi di aplikasi Dokter Hebat.`,
           });
+          console.log('data==========>', data)
           return response(res, 'Konsultasi Berhasil Dibuat', send.dataValues);
           // if (template) {
           //   return response(res, 'Konsultasi Berhasil Dibuat', send.dataValues);
