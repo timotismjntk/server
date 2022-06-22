@@ -49,7 +49,7 @@ module.exports = {
             user_id: results?.masyarakat_user_id,
             jenis_user: results?.masyarakat_jenis_user,
             nama: results?.masyarakat_nama,
-            konten: results?.keluhan || '',
+            konten: results?.keluhan?.length > 0 ? `Keluhan pasien: ${results?.keluhan}` : '',
           });
           socketIO.emit(
             results?.tenaga_kesehatan_user_id.toString() + 'mulai',
