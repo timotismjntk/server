@@ -55,6 +55,11 @@ module.exports = {
             results?.tenaga_kesehatan_user_id.toString() + 'mulai',
             send.dataValues,
           ); // konfigurasi untuk socket io
+          messaging(
+            results?.tenaga_kesehatan_user_id?.toString() + results?.tenaga_kesehatan_jenis_user?.toString() + '',
+            results?.nama,
+            results?.konten,
+          );
           return response(res, 'Konsultasi Berhasil Dibuat', send.dataValues);
           // if (template) {
           //   return response(res, 'Konsultasi Berhasil Dibuat', send.dataValues);
