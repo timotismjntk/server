@@ -332,13 +332,20 @@ module.exports = {
               .sort((a, b) => (a.status != null) - (b.status != null) || a - b),
           },
           {
-            title: 'Konsultasi Lama',
+            title: 'Konsultasi Berlangsung',
             data: konsultasi.filter(item => {
               if (
                 item.status === 'Belum Selesai' ||
-                item.status === 'Selesai' ||
                 item.status === 'Terima'
               ) {
+                return item;
+              }
+            }),
+          },
+          {
+            title: 'Konsultasi Selesai',
+            data: konsultasi.filter(item => {
+              if (item.status === 'Selesai') {
                 return item;
               }
             }),
