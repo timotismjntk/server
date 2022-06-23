@@ -58,7 +58,7 @@ module.exports = {
           messaging(
             results?.tenaga_kesehatan_user_id?.toString() + results?.tenaga_kesehatan_jenis_user?.toString() + '',
             results?.nama,
-            results?.konten,
+            `Ada Konsultasi baru dari ${results?.masyarakat_nama}`,
           );
           return response(res, 'Konsultasi Berhasil Dibuat', send.dataValues);
           // if (template) {
