@@ -16,7 +16,7 @@ const peerServer = ExpressPeerServer(server, {
   generateClientId: uuidv4(),
 });
 const konsultasiRoute = require('./routes/konsultasi');
-const konsultasiSocket = require('./controllers/socketKonsultasi')
+const {getKonsultasiById} = require('./controllers/socketKonsultasi')
 
 app.use('/peerjs', peerServer);
 app.use(express.static('public'));
@@ -48,8 +48,8 @@ socketIO.on('connection', socket => {
     socket.join(roomID);
     socket.to(roomID).emit('user-connected', userId);
   });
-  socket.on('message', ({userId, chat}) => {
-    console.log(userId, chat);
+  socket.on('getMessageById', ({konsultasi_id, user_id, limit, page}) => {
+    socket.emit(konsultasi_id?.toString() + 'percakapan', getKonsultasiById(konsultasi_id, user_id, limit, page))
   });
 });
 
